@@ -1,7 +1,14 @@
 # VBA-challenge
 Sub stockmarket()
 
-'declare variables
+
+'declare variables for for look through workbook
+Dim ws As Worksheet
+
+
+For Each ws In Worksheets
+ ws.Activate
+ 
 Dim ticker As String
 Dim lastrow As Double
 Dim summarytable As Integer
@@ -27,7 +34,6 @@ Range("O3").Value = "Greatest % Decrease"
 Range("O4").Value = "Greatest Total Volume"
 Range("P1").Value = "Ticker"
 Range("Q1").Value = "Value"
-
 
 summarytable = 2
 lastrow = Cells(Rows.Count, 1).End(xlUp).Row
@@ -114,11 +120,16 @@ End If
 
 Next i
 
-End Sub
+Next
 
+End Sub
 
 Sub ResetButton()
+
+Dim ws As Worksheet
+For Each ws In Worksheets
+ ws.Activate
  Range("I:Q").ClearContents
  Range("I:Q").ClearFormats
+ Next
 End Sub
-
