@@ -2,13 +2,14 @@
 Sub stockmarket()
 
 
-'declare variables for for look through workbook
+'Declare worksheet as variable
 Dim ws As Worksheet
 
-
+'loop through each active worksheet in workbook
 For Each ws In Worksheets
  ws.Activate
  
+'declare all data items as variables through workbook
 Dim ticker As String
 Dim lastrow As Double
 Dim summarytable As Integer
@@ -23,7 +24,7 @@ Dim greatesttotalvolume As Double
 
 
 
-'Inserting column and adding title
+'Inserting Headersfor New Columns and rows
 
 Range("I1").Value = "Ticker"
 Range("J1").Value = "Yearly Change"
@@ -35,7 +36,9 @@ Range("O4").Value = "Greatest Total Volume"
 Range("P1").Value = "Ticker"
 Range("Q1").Value = "Value"
 
+'setting summarytable variable to 2, so data commutes in row 2 and below. Organize location of ticker data in summary chart
 summarytable = 2
+'setting last row value by locating the last row used in column 1
 lastrow = Cells(Rows.Count, 1).End(xlUp).Row
 
 'loop through row 2 to the last row of data
@@ -51,18 +54,24 @@ End If
 If Cells(i + 1, 1).Value <> Cells(i, 1).Value Then
 'set ticker symbol stock name
 ticker = Cells(i, 1).Value
-'and Printed ticker symbol name in summary chart under Column I (titled ticker)
+'and Printed ticker symbol name in summary chart under Column I (titled 'Ticker')
 Range("I" & summarytable).Value = ticker
 
-'add total stock volume for a specfic ticker
+
+'add total stock volume for a specfic ticker, with values located in column 7 for selected ticker symbol
 totalstockvolume = totalstockvolume + Cells(i, 7).Value
 'Print ticker name in summary chart under Column L (titled Total Stock Volume)
 Range("L" & summarytable).Value = totalstockvolume
 'setting total stock volume back to zero to calculate total stock volume for next ticker
 totalstockvolume = 0
 
+
+
+'Pulling Greatest Total Volume by locating the maximum value in column L (titled 'Total Stock Volume')
 greatesttotalvolume = Application.WorksheetFunction.Max(Range("L:L"))
+'Print Greatest Total Volume value in cell Q4, under column Value and row Greatest % increase.
 Range("Q4").Value = greatesttotalvolume
+'Locate corresponding Ticker symbol name with Greatest Total Volume value. Print Ticker symbol name in P4
 If greatesttotalvolume = Range("L" & summarytable).Value Then
 Range("P4").Value = Range("I" & summarytable).Value
 End If
@@ -90,46 +99,60 @@ percentchange = 0
 Else
 'otherwise percent change is yearly change divided by open price
 percentchange = yearlychange / openprice
-'printer percent change calue in summary table and format it to display a percentage
+'Print percent change value in summary table and format it to display a percentage
 Range("K" & summarytable).Value = Format(percentchange, "Percent")
 'setting opening price back to zero to calculate yearly change for next ticker
 openprice = 0
 End If
 
+'Pulling Greatest % increase by locating the maximum value in column k (titled 'Percent Change')
 greatestincrease = Application.WorksheetFunction.Max(Range("K:K"))
+'Print Greatest % increase value in cell Q2, under column Value and row Greatest % increase. keep value in percentage format
 Range("Q2").Value = Format(greatestincrease, "Percent")
+'Locate corresponding Ticker symbol name with greatest % increase value
 If greatestincrease = Range("K" & summarytable).Value Then
 Range("P2").Value = Range("I" & summarytable).Value
 End If
+
+
+'Pulling Greatest % decrease by locating the minumum value in column k (titled 'Percent Change')
 greatestdecrease = Application.WorksheetFunction.Min(Range("K:K"))
+'Print Greatest % decrease value in cell Q3, under column Value and row Greatest % decrease. keep value in percentage format
 Range("Q3").Value = Format(greatestdecrease, "Percent")
+'Locate corresponding Ticker symbol name with greatest % increase value. Print Ticker symbol name in P3
 If greatestdecrease = Range("K" & summarytable).Value Then
 Range("P3").Value = Range("I" & summarytable).Value
 End If
-'Go to next row in summary chart to enter next ticker information
+
+
+'Add next row in summary chart to enter next ticker information
 summarytable = summarytable + 1
 
 Else
 
-'adding to the Total Stock volume
+'add to the Total Stock volume
 totalstockvolume = totalstockvolume + Cells(i, 7).Value
 
 
 'closing out all open if statements and loops
 End If
-
 Next i
-
 Next
 
 End Sub
 
+
 Sub ResetButton()
 
+'declare worksheet as variable
 Dim ws As Worksheet
+
+'loop through each active worksheet in workbook
 For Each ws In Worksheets
  ws.Activate
+'Clear all content and formatting added from column I to Q
  Range("I:Q").ClearContents
  Range("I:Q").ClearFormats
+ 'Close loop
  Next
 End Sub
